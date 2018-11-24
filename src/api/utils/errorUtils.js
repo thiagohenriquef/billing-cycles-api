@@ -12,4 +12,4 @@ const handleError = (res, message = '', status = 403) => {
   })
 }
 
-module.exports = { sendErrorsFromDB }
+module.exports = { sendErrorsFromDB, handleError }

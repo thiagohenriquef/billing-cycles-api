@@ -16,7 +16,7 @@ const login = (req, res, next) => {
       return sendErrorsFromDB(res, err)
     }
     if (user && bcrypt.compareSync(password, user.password)) {
-      const token = jwt.sign(user, env.authSecret, { expiresIn: '8h' })
+      const token = jwt.sign(user.toJSON(), env.authSecret, { expiresIn: '8h' })
       const { name, email } = user
       return res.json({ name, email, token })
     }
@@ -60,12 +60,13 @@ const signUp = (req, res, next) => {
     if (user) {
       return res.status(400).send({errors: ['User already registered.']})
     }
-    const newUser = newUser({ name, email, password: passwordHash })
+
+    const newUser = new User({ name, email, password: passwordHash })
     newUser.save((err, user) => {
       if (err) {
         return sendErrorsFromDB(res, err)
       }
-      login(res, req, next)
+      login(req, res, next)
     })
   })
 }
